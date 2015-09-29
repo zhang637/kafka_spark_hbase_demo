@@ -17,7 +17,6 @@ import org.apache.hadoop.hbase.Cell;
 import org.apache.hadoop.hbase.CellUtil;
 
 public class RecsysLogs extends HttpServlet {
-
 	private static final long serialVersionUID = 4289573629015709424L;
 
 	@Override
@@ -45,5 +44,4 @@ public class RecsysLogs extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		this.doGet(req, resp);
 	}
-
 }

@@ -24,5 +24,4 @@ public class TailService {
 
 		new MsgSender(queue).start();
 	}
-
 }

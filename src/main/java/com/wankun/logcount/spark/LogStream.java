@@ -120,7 +120,6 @@ public class LogStream {
 		// 统计Log中的数据，并保存到HBase中
 		JavaDStream<Long> nums = lines.count();
 		nums.foreachRDD(new Function<JavaRDD<Long>, Void>() {
-
 			private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 
 			@Override
@@ -137,5 +136,4 @@ public class LogStream {
 		ssc.start();
 		ssc.awaitTermination();
 	}
-
 }

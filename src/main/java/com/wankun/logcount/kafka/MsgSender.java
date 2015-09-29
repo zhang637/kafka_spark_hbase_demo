@@ -24,13 +24,12 @@ public class MsgSender extends Thread {
 		this.queue = queue;
 
 		Properties props = new Properties();
-		props.put("metadata.broker.list", "10.10.102.191:9092,10.10.102.192:9092,10.10.102.193:9092");
+		props.put("metadata.broker.list", "master:9092,slave1:9092,slave2:9092");
 		props.put("serializer.class", "kafka.serializer.StringEncoder");
 		// props.put("partitioner.class", "example.producer.SimplePartitioner");
 		props.put("request.required.acks", "1");
 
 		ProducerConfig config = new ProducerConfig(props);
-
 		producer = new Producer<String, String>(config);
 	}
 

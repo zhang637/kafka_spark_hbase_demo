@@ -29,9 +29,8 @@ public class TailLog extends Thread {
 	public void run() {
 		BufferedReader reader = null;
 		try {
-			// Path logpath=Paths.get(logname);
-			// File posfile =
-			// logpath.getParent().resolve("."+logpath.getFileName()+".pos").toFile();
+			// Path logpath = Paths.get(logname);
+			// File posfile = ogpath.getParent().resolve("."+logpath.getFileName()+".pos").toFile();
 			reader = new BufferedReader(new FileReader(new File(logname)));
 
 			long filesize = 0;
