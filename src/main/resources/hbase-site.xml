@@ -1,26 +1,6 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
-<!--
-/**
- * Copyright 2010 The Apache Software Foundation
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
--->
+
 <configuration>
 <property>
   <name>hbase.cluster.distributed</name>
@@ -29,7 +9,7 @@
 
 <property>
   <name>hbase.rootdir</name>
-  <value>hdfs://dwztgame/hbase</value>
+  <value>hdfs://master/apps/hbase/data</value>
 </property>
 
 <property>
@@ -39,7 +19,7 @@
 
 <property>
   <name>hbase.zookeeper.quorum</name>
-  <value>node01.dw.ztgame.com:2181,node02.dw.ztgame.com:2181,node03.dw.ztgame.com:2181</value>
+  <value>master:2181,slave1:2181,slave2:2181</value>
 </property>
 
 <property>
@@ -49,14 +29,12 @@
     Same property is used by the Master for count of master handlers.
     Default is 10.</description>
 </property>
-                                           
 <property>
   <name>hbase.regionserver.flushlogentries</name>
   <value>500</value>
   <description>Sync the HLog to HDFS when it has accumulated this many
    entries. Default 1. Value is checked on every HLog.hflush</description>
 </property>
-                                   
 <property>
   <name>hbase.regionserver.optionallogflushinterval</name>
   <value>2000</value>
@@ -64,7 +42,6 @@
     accumulated enough entries to trigger a sync. Default 1 second. Units:
     milliseconds. </description>
 </property>
-                                            
 <property>
   <name>hbase.regionserver.thread.splitcompactcheckfrequency</name>
   <value>600000</value>
@@ -77,14 +54,12 @@
   <description>Rebalance if any regionserver has average + (average * slop) regions.
          Default is 0% slop. </description>
 </property>
-                                      
 <property>
   <name>hbase.server.thread.wakefrequency</name>
   <value>5000</value>
   <description>Time to sleep in between searches for work (in milliseconds).
          Used as sleep interval by service threads such as log roller. </description>
 </property>
-                                   
 <property>
   <name>hbase.hregion.memstore.flush.size</name>
   <value>134217728</value>
@@ -113,7 +88,6 @@
      heavy write loads. This can reduce the frequency of stop-the-world
      GC pauses on large heaps.</description>
 </property>
-                                                                
 <property>
   <name>hfile.block.cache.size</name>
   <value>0.2</value>
@@ -121,14 +95,12 @@
      used by HFile/StoreFile. Default of 0.2 means allocate 20%.
      Set to 0 to disable. </description>
 </property>
-
 <property>
   <name>hbase.regionserver.nbreservationblocks</name>
   <value>10</value>
   <description>The number of resevoir blocks of memory release on
     OOME so we can cleanup properly before server shutdown.</description>
 </property>
-
 <property>
   <name>hbase.regionserver.global.memstore.upperLimit</name>
   <value>0.5</value>
@@ -145,7 +117,6 @@
    the minimum possible flushing to occur when updates are blocked due to
    memstore limiting.</description>
 </property>
-                     
 <property>
   <name>hbase.hregion.max.filesize</name>
   <value>2684354560</value>
@@ -154,12 +125,10 @@
     grown to exceed this value, the hosting HRegion is split in two.
     Default: 256M.</description>
 </property>
-
 <property>
   <name>hbase.snapshot.enabled</name>
   <value>true</value>
 </property>
-
 <property>
   <name>hbase.regionserver.regionSplitLimit</name>
   <value>200</value>
@@ -168,7 +137,6 @@
    regions but acts as a guideline for the regionserver to stop splitting after
    a certain limit. Default is set to MAX_INT; i.e. do not block splitting.</description>
 </property>
-
 <property>
   <name>hbase.hstore.compactionThreshold</name>
   <value>4</value>
