@@ -23,20 +23,20 @@ public class RecsysLogs extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HTableInterface htable = (HTableInterface) getServletContext().getAttribute("htable");
 		Scan scan = new Scan();
-		scan.addColumn(Bytes.toBytes("f"), Bytes.toBytes("nums"));
+		scan.addColumn(Bytes.toBytes("f1"), Bytes.toBytes("nums"));
 		scan.setReversed(true);
 		scan.setMaxResultSize(20);
 		scan.setFilter(new PageFilter(20));
 		ResultScanner scanner = htable.getScanner(scan);
 		StringBuilder sb = new StringBuilder();
 		for (Result res : scanner) {
-			Cell cell = res.getColumnLatestCell(Bytes.toBytes("f"), Bytes.toBytes("nums"));
+			Cell cell = res.getColumnLatestCell(Bytes.toBytes("f1"), Bytes.toBytes("nums"));
 			Long nums = Bytes.toLong(CellUtil.cloneValue(cell));
 			String key = Bytes.toString(CellUtil.cloneRow(cell));
 			sb.append(key + " : " + nums + "\n");
 		}
 		scanner.close();
-
+		System.out.println("-------------->>>>>>>>>>>>>"+sb.toString());
 		resp.getWriter().write(sb.toString());
 	}
 

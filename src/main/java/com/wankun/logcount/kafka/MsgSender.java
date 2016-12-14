@@ -40,7 +40,7 @@ public class MsgSender extends Thread {
 				if (line != null && !line.replace("\n", "").replace("\r", "").equals("")) {
 					String timestamp = sdf.format(new Date());
 					KeyedMessage<String, String> data = new KeyedMessage<String, String>("recsys", timestamp, line);
-					logger.info("sending kv :({}:{})", timestamp, line);
+					logger.info("sending kv :({}---------->{})", timestamp, line);
 					producer.send(data);
 				}
 			} catch (InterruptedException e) {

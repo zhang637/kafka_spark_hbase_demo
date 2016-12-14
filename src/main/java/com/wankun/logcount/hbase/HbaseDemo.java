@@ -1,4 +1,4 @@
-package com.wankun.logcount.spark;
+package com.wankun.logcount.hbase;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;

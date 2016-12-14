@@ -47,12 +47,12 @@ public class LogStream {
 
         synchronized (HTableInterface.class) {
             if (table == null) {
-                table = connection.getTable("recsys_logs");
+                table = connection.getTable(tablename);
             }
         }
 
 		/* start http info server */
-        HttpServer2.Builder builder = new HttpServer2.Builder().setName(tablename).setConf(conf);
+        HttpServer2.Builder builder = new HttpServer2.Builder().setName("recsys").setConf(conf);
         InetSocketAddress addr = NetUtils.createSocketAddr("0.0.0.0", 8089);
         builder.addEndpoint(URI.create("http://" + NetUtils.getHostPortString(addr)));
         infoServer = builder.build();
@@ -98,7 +98,7 @@ public class LogStream {
         Map<String, Integer> topicMap = Maps.newHashMap();
         topicMap.put("recsys", 3);
         JavaPairReceiverInputDStream<String, String> logstream = KafkaUtils.createStream(ssc,
-                "localhost:2181", "recsys_group0", topicMap);
+                "hdp1:2181", "recsys_group0", topicMap);
         logstream.print();
 
         JavaDStream<String> lines = logstream.map(new Function<Tuple2<String, String>, String>() {
@@ -112,25 +112,26 @@ public class LogStream {
             private static final long serialVersionUID = 7786877762996470593L;
             @Override
             public Boolean call(String msg) throws Exception {
-                return msg.indexOf("character service received paramters:") > 0;
+                return msg.indexOf("2016-12-14 14:00:") > 0;
             }
         });
 
         // 统计Log中的数据，并保存到HBase中
-//        JavaDStream<Long> nums = lines.count();
-//        nums.foreachRDD(new Function<JavaRDD<Long>, Void>() {
-//            private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
-//
-//            @Override
-//            public Void call(JavaRDD<Long> rdd) throws Exception {
-//                Long num = rdd.take(1).get(0);
-//                String ts = sdf.format(new Date());
-//                Put put = new Put(Bytes.toBytes(ts));
-//                put.add(Bytes.toBytes("f"), Bytes.toBytes("nums"), Bytes.toBytes(num));
-//                table.put(put);
-//                return null;
-//            }
-//        });
+        JavaDStream<Long> nums = lines.count();
+        System.out.println("----------*******");
+        nums.foreachRDD(new Function<JavaRDD<Long>, Void>() {
+            private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
+
+            @Override
+            public Void call(JavaRDD<Long> rdd) throws Exception {
+                Long num = rdd.take(1).get(0);
+                String ts = sdf.format(new Date());
+                Put put = new Put(Bytes.toBytes(ts));
+                put.add(Bytes.toBytes("f1"), Bytes.toBytes("nums"), Bytes.toBytes(num));
+                table.put(put);
+                return null;
+            }
+        });
         ssc.start();
         ssc.awaitTermination();
     }
