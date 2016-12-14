@@ -25,7 +25,7 @@ public class RecsysLogs extends HttpServlet {
 		Scan scan = new Scan();
 		scan.addColumn(Bytes.toBytes("f"), Bytes.toBytes("nums"));
 		scan.setReversed(true);
-		// scan.setMaxResultSize(20);
+		scan.setMaxResultSize(20);
 		scan.setFilter(new PageFilter(20));
 		ResultScanner scanner = htable.getScanner(scan);
 		StringBuilder sb = new StringBuilder();

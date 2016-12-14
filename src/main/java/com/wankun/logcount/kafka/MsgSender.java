@@ -24,9 +24,8 @@ public class MsgSender extends Thread {
 		this.queue = queue;
 
 		Properties props = new Properties();
-		props.put("metadata.broker.list", "master:9092,slave1:9092,slave2:9092");
+		props.put("metadata.broker.list", "10.0.1.101:6667");
 		props.put("serializer.class", "kafka.serializer.StringEncoder");
-		// props.put("partitioner.class", "example.producer.SimplePartitioner");
 		props.put("request.required.acks", "1");
 
 		ProducerConfig config = new ProducerConfig(props);
@@ -41,7 +40,7 @@ public class MsgSender extends Thread {
 				if (line != null && !line.replace("\n", "").replace("\r", "").equals("")) {
 					String timestamp = sdf.format(new Date());
 					KeyedMessage<String, String> data = new KeyedMessage<String, String>("recsys", timestamp, line);
-					logger.debug("sending kv :( {}:{})", timestamp, line);
+					logger.info("sending kv :({}:{})", timestamp, line);
 					producer.send(data);
 				}
 			} catch (InterruptedException e) {
@@ -49,5 +48,4 @@ public class MsgSender extends Thread {
 			}
 		}
 	}
-
 }

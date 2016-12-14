@@ -2,7 +2,7 @@
 
 ## 系统架构
 
-	本使用kafka，spark，hbase开发日志分析系统。
+    本使用kafka，spark，hbase开发日志分析系统。
 	
 ![architecture](/docs/images/architecture.png "architecture")
 
@@ -54,10 +54,10 @@ d. 创建kafka topic
 
 e. 查看是否创建成功
 
-> bin/kafka-topics.sh --list --zookeeper localhost:2181
+    > bin/kafka-topics.sh --list --zookeeper localhost:2181
 
-> bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic my-replicated-topic
-Topic:my-replicated-topic	PartitionCount:1	ReplicationFactor:3	Configs:
+    > bin/kafka-topics.sh --describe --zookeeper localhost:2181 --topic my-replicated-topic
+    Topic:my-replicated-topic	PartitionCount:1	ReplicationFactor:3	Configs:
 	Topic: my-replicated-topic	Partition: 0	Leader: 1	Replicas: 1,2,0	Isr: 1,2,0
 
 
@@ -95,26 +95,30 @@ g. 注意事项
 ### HBase 保存数据
 
 创建hbase表
-
-	create ‘recsys_logs’,’f’
-
-服务器端部署.服务器端启动了一个httpserver，该server需要将jar包中的html页面解压出来，所以先解压，后运行程序
-
+	
+	create 'recsys_logs','f'
+	
+###服务器端部署.
+服务器端启动了一个httpserver，该server需要将jar包中的html页面解压出来，所以先解压，后运行程序
+	
 	jar xvf recsys-1.0.jar
-
 
 #### 系统运行
 
 客户端
-	
-> java -Dlogback.configurationFile=./conf/logback.xml -classpath .:libs/*:logcount-1.0.jar com.wankun.logcount.kafka.TailService dest.log
+创建run.sh
 
- 服务端
+    #!/usr/bin/env bash
+    lib=lib/*
+    cpath='';
+    for jar in $lib;
+    do
+        cpath+=":"$jar
+    done;
+    java -Dlogback.configurationFile=./conf/logback.xml -classpath .:$cpath com.wankun.logcount.kafka.TailService "$@"
 
+执行
+./run.sh /var/log/httpd/access_log
+
+服务端
 > spark-submit --class com.wankun.logcount.spark.LogStream --master spark://SparkMaster:7077 logcount-1.0.jar
-
-	
-### 注释
-
-
-

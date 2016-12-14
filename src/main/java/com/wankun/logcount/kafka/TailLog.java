@@ -11,15 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TailLog extends Thread {
+
+	// private ByteBuffer buf = ByteBuffer.allocate(4096);
 	private final static Logger logger = LoggerFactory.getLogger(TailLog.class);
 
 	private BlockingQueue<String> queue;
 	private String logname;
 
 	private CharBuffer buf = CharBuffer.allocate(4096);
-
-	// private ByteBuffer buf = ByteBuffer.allocate(4096);
-
 	public TailLog(BlockingQueue<String> queue, String logname) {
 		this.queue = queue;
 		this.logname = logname;
@@ -37,7 +36,7 @@ public class TailLog extends Thread {
 			while (true) {
 				// 判断文件是否已经切换
 				if (filesize > new File(logname).length()) {
-					logger.debug("filesize :{}     current system file size :{} . Log file switchover!", filesize,
+					logger.debug("filesize :{} current system file size :{} . Log file switchover!", filesize,
 							new File(logname).length());
 					try {
 						// 在切换读文件前，读取文件全部内容
@@ -45,16 +44,7 @@ public class TailLog extends Thread {
 						while (reader.read(buf) > 0) {
 							buf.flip();
 							synchronized (buf) {
-								// 读buffer 并解析
-								for (int i = 0; i < buf.limit(); i++) {
-									char c = buf.get();
-									line.append(c);
-									if ((c == '\n') || (c == '\r'))
-										if (line.length() > 0) {
-											queue.put(line.toString());
-											line = new StringBuilder();
-										}
-								}
+								line = getString(line);
 							}
 						}
 						queue.put(line.toString());
@@ -73,10 +63,10 @@ public class TailLog extends Thread {
 
 				for (int retrys = 10; retrys > 0; retrys--) {
 					int bufread = reader.read(buf);
-					if (bufread < 0) {
+					if (bufread < 0) {//没有读到数据
 						if (retrys > 0)
 							Thread.currentThread().sleep(1000);
-						else {
+						else {//连续10次未读到
 							// 等待10s后无新数据读出
 							synchronized (buf) {
 								// 等待 cachetime 秒后文件仍未写入
@@ -89,21 +79,13 @@ public class TailLog extends Thread {
 						}
 					} else {
 						filesize = new File(logname).length();
-						retrys = -1;
+						retrys = -1;//一旦读到数据，停止retry
 
 						buf.flip();
 						synchronized (buf) {
 							// 读buffer 并解析
 							StringBuilder line = new StringBuilder();
-							for (int i = 0; i < buf.limit(); i++) {
-								char c = buf.get();
-								line.append(c);
-								if ((c == '\n') || (c == '\r'))
-									if (line.length() > 0) {
-										queue.put(line.toString());
-										line = new StringBuilder();
-									}
-							}
+							line = getString(line);
 							// 接着写不完整的数据
 							buf.compact();
 							if (line.length() > 0) {
@@ -126,6 +108,20 @@ public class TailLog extends Thread {
 			}
 		}
 
+	}
+
+	private StringBuilder getString(StringBuilder line) throws InterruptedException {
+		// 读buffer 并解析
+		for (int i = 0; i < buf.limit(); i++) {
+            char c = buf.get();
+            line.append(c);
+            if ((c == '\n') || (c == '\r'))
+                if (line.length() > 0) {
+                    queue.put(line.toString());
+                    line = new StringBuilder();
+                }
+        }
+		return line;
 	}
 
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>logcount</name>
+	<name>kafka_spark_hbase_demo</name>
 	<comment></comment>
 	<projects>
 	</projects>

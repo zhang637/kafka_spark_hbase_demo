@@ -3,33 +3,51 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.wankun</groupId>
-	<artifactId>logcount</artifactId>
+	<artifactId>kafka_spark_hbase_demo</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>logcount</name>
+	<name>kafka_spark_hbase_demo</name>
 	<url>http://maven.apache.org</url>
 
-	<repositories>
+	<!--repositories>
 		<repository>
 			<id>cloudera</id>
 			<url>https://repository.cloudera.com/cloudera/cloudera-repos</url>
+		</repository>
+	</repositories-->
+	<repositories>
+		<repository>
+			<id>hdp</id>
+			<url>http://repo.hortonworks.com/content/repositories/releases/</url>
+		</repository>
+		<repository>
+			<id>hdp2</id>
+			<url>http://repo.hortonworks.com/content/repositories/jetty-hadoop/</url>
+		</repository>
+		<repository>
+			<id>hdp3</id>
+			<url>http://repo.hortonworks.com/content/repositories/re-hosted</url>
+		</repository>
+		<repository>
+			<id>hdp4</id>
+			<url>http://repo.hortonworks.com/content/repositories/central/</url>
 		</repository>
 	</repositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spark.version>1.1.0-cdh5.2.0</spark.version>
-		<hbase.version>0.98.6-cdh5.2.0</hbase.version>
+		<spark.version>1.6.2.2.5.0.0-1245</spark.version>
+		<hbase.version>1.1.2.2.5.0.0-1245</hbase.version>
 	</properties>
 	<dependencies>
-		<dependency>
+		<!--  dependency>
 			<groupId>jdk.tools</groupId>
 			<artifactId>jdk.tools</artifactId>
 			<version>1.7.0_51</version>
 			<scope>system</scope>
 			<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
@@ -38,7 +56,7 @@
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka_2.10</artifactId>
-			<version>0.8.1.1</version>
+			<version>0.10.0.2.5.0.0-1245</version>
 		</dependency>
 
 		<dependency>
@@ -77,10 +95,27 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 					<encoding>UTF-8</encoding>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>make-zip</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/resources/assembly.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TailService {
-
 	private final static Logger logger = LoggerFactory.getLogger(TailService.class);
 
 	public static void main(String[] args) {
