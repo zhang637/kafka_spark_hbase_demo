@@ -56,7 +56,6 @@ public class LogStream {
         InetSocketAddress addr = NetUtils.createSocketAddr("0.0.0.0", 8089);
         builder.addEndpoint(URI.create("http://" + NetUtils.getHostPortString(addr)));
         infoServer = builder.build();
-
         infoServer.addServlet("monitor", "/monitor", RecsysLogs.class);
         infoServer.setAttribute("htable", table);
         infoServer.setAttribute("conf", conf);
@@ -85,7 +84,6 @@ public class LogStream {
     }
 
     public static void main(String[] args) {
-        logger.info("------open hbase----------");
         try {
             openHBase("recsys_logs");
         } catch (IOException e) {
@@ -93,6 +91,7 @@ public class LogStream {
             System.exit(-1);
         }
 
+        logger.info("------open hbase----------");
         SparkConf conf = new SparkConf().setAppName("recsys log stream").setMaster("local[2]");
         JavaStreamingContext ssc = new JavaStreamingContext(conf, new Duration(1000));
         Map<String, Integer> topicMap = Maps.newHashMap();
@@ -105,23 +104,21 @@ public class LogStream {
             private static final long serialVersionUID = -1801798365843350169L;
             @Override
             public String call(Tuple2<String, String> tuple2) {
-                logger.info("-----------" + tuple2._2());
+                logger.info("------=====>>>>>" + tuple2._2());
                 return tuple2._2();
             }
         }).filter(new Function<String, Boolean>() {
             private static final long serialVersionUID = 7786877762996470593L;
             @Override
             public Boolean call(String msg) throws Exception {
-                return msg.indexOf("2016-12-14 14:00:") > 0;
+                return msg.indexOf("INFO") > 0;
             }
         });
 
         // 统计Log中的数据，并保存到HBase中
         JavaDStream<Long> nums = lines.count();
-        System.out.println("----------*******");
         nums.foreachRDD(new Function<JavaRDD<Long>, Void>() {
             private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
-
             @Override
             public Void call(JavaRDD<Long> rdd) throws Exception {
                 Long num = rdd.take(1).get(0);

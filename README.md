@@ -96,7 +96,7 @@ g. 注意事项
 
 创建hbase表
 	
-	create 'recsys_logs','f'
+	create 'recsys_logs','f1'
 	
 ###服务器端部署.
 服务器端启动了一个httpserver，该server需要将jar包中的html页面解压出来，所以先解压，后运行程序
@@ -121,4 +121,17 @@ g. 注意事项
 ./run.sh /var/log/httpd/access_log
 
 服务端
-> spark-submit --class com.wankun.logcount.spark.LogStream --master spark://SparkMaster:7077 logcount-1.0.jar
+
+    #! /usr/bin/env bash
+    lib=lib/*
+    cpath='';
+    for jar in $lib;
+    do
+            cpath+=":"$jar
+    done;
+    cpath2=.:`echo /opt/kafka_spark_hbase_demo-1.0/lib/*.jar | tr ' ' ':'`
+    cpath3='/opt/kafka_spark_hbase_demo-1.0/lib/'
+    cpath4="/usr/hdp/current/spark-client/bin/spark-submit --driver-class-path $cpath2 --class com.wankun.logcount.spark.LogStream /opt/kafka_spark_hbase_demo-1.0/lib/kafka_spark_hbase_demo-1.0.jar"
+    `$cpath4`
+    #java  -classpath $CLASSPATH$cpath com.wankun.logcount.spark.LogStream
+    

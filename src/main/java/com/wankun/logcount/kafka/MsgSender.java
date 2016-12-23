@@ -16,7 +16,6 @@ public class MsgSender extends Thread {
 	private final static Logger logger = LoggerFactory.getLogger(MsgSender.class);
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
-
 	private BlockingQueue<String> queue;
 	private Producer<String, String> producer;
 
@@ -24,7 +23,7 @@ public class MsgSender extends Thread {
 		this.queue = queue;
 
 		Properties props = new Properties();
-		props.put("metadata.broker.list", "10.0.1.101:6667");
+		props.put("metadata.broker.list", "hdp1:6667");
 		props.put("serializer.class", "kafka.serializer.StringEncoder");
 		props.put("request.required.acks", "1");
 
